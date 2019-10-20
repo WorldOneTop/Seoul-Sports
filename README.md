@@ -1,1 +1,1 @@
-# androidHTTPtest
+# 2019년 9월 개발된 앱 프로젝트 파일
