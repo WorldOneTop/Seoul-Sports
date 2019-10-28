@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no">
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <style>
+    .panel-tost{display:none;position:absolute;background:#ddd;color:#333;width:230px;text-align:center;z-index:6001;opacity:.8;filter:alpha(opacity=50);top:40%;left:25%;}
+    .of{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 300px;
+    }
+    #Progress_Loading {
+     width: 100%;  
+     height: 100%;  
+     top: 0px;
+     left: 0px;
+     position: fixed;  
+     display: block;  
+     opacity: 0.7;  
+     background-color: #fff;  
+     z-index: 99;  
+     text-align: center; } 
+  
+#loading-image {  
+ position: absolute; 
+ top: 25%; 
+ left: 25%; 
+ z-index: 100; }
+    a{text-decoration:none;}
+    a:link{color: black;}
+    a:visited{color: black;}
+    a:hover{color: black;text-decoration:none;}
+    a:active{color: black;}
+    .menu{
+      float: right;
+      padding-right: 10px;
+
+    }
+
+    body{
+      padding-top: 50px; 
+      padding-left: 10px; 
+    }
+    .forjq{
+      background-color: #ffffff;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .forpa{
+      padding-left: 10px;
+    }
+  </style>
+
+  <?php
+  include("connect.php");
+  echo "<script> var listName='{$_GET['list']}';</script>";
+  $maxPage = mysqli_num_rows($mysqli->query("select num from list;"));
+  echo "<script> var maxPage={$maxPage};</script>";
+  $search = isset($_POST['search']) ? $_POST['search'] : "";
+  echo "<script> var search='{$search}';</script>";
+?>
+
+</head>
+<body>
+
+<script type="text/javascript">
+  var page = 0;
+  var starting = false;
+  $(document).ready(function(){
+    $('#Progress_Loading').hide(); //첫 시작시 로딩바를 숨겨준다.
+    $.ajax({
+          url:"loading_list.php",
+          type:'POST',
+          dataType:"html",
+          data: "page="+page+"&list="+listName+"&search="+search,
+          beforeSend:function(){
+            starting = true;
+            $('#Progress_Loading').show(); //ajax실행시 로딩바를 보여준다.
+          },
+          success:function(data){
+            $('#Progress_Loading').hide(); //ajax종료시 로딩바를 숨겨준다.
+            $("#loading").append(data);     
+            page += 15;            
+          },
+          complete:function(){
+            starting = false;  
+          },
+          error:function(jqXHR, textStatus, errorThrown){
+              alert("ERROR_AJAX \n" + textStatus + " : " + errorThrown);
+          }
+        });
+  });
+  jQuery(window).scroll(function () {//마지막 458 1226 (screenH)740 (innerH)612 (outerH)668
+    if(window.scrollY+1 >= document.documentElement.getBoundingClientRect().height - window.outerHeight){    
+      if(!starting && page <maxPage){
+        $.ajax({
+          url:"loading_list.php",
+          type:'POST',
+          dataType:"html",
+          data: "page="+page+"&list="+listName,
+          beforeSend:function(){
+            starting = true;
+            $('#Progress_Loading').show(); //ajax실행시 로딩바를 보여준다.
+          },
+          success:function(data){
+            $('#Progress_Loading').hide(); //ajax종료시 로딩바를 숨겨준다.
+            $("#loading").append(data);     
+            page += 15;            
+          },
+          complete:function(){
+            starting = false;  
+          },
+          error:function(jqXHR, textStatus, errorThrown){
+              alert("ERROR_AJAX \n" + textStatus + " : " + errorThrown);
+          }
+        });
+      }
+    }
+  });
+  function toost(){
+   $('.panel-tost').fadeIn(400);
+  setTimeout(function() {
+    $('.panel-tost').slideUp(1500);
+      }, 1000);
+}
+</script>
+
+
+<nav class="navbar navbar-default navbar-fixed-top ">
+   <div class="container-fluid">
+    <div class="navbar-header">  
+        <div class="navbar-text forpa"> <?php echo $_GET['list']." 게시판"; ?>
+        <?php echo '<img class ="menu" onclick ="location.href=\'write.html?list='.$_GET['list'].'\'" src="img/writing.png" >' ?>
+        <?php echo '<img class ="menu" onclick ="location.href=\'search.html?list='.$_GET['list'].'\'" src="img/search_icon.png" >' ?>
+      <img onclick ="location.reload();" class ="menu" src="img/refresh_icon.png" ></div>  
+    </div>
+  </div>
+</nav>
+<div class="panel panel-tost">
+ <div class="panel-heading">
+  <p>로그인 되었습니다.</p>
+</div>
+</div>
+<table class = "table table-hover" id = "loading" onclick="$('body').addClass('forjq');" >
+
+
+<div id = "Progress_Loading"><!-- 로딩바 -->
+<img id ="loading-image" src="img/loading.gif"/>
+</div>
+</table>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+</body>
+</html>

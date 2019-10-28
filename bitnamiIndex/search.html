@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <style>
+    .of{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 150px;
+    }
+    a{text-decoration:none;}
+    a:link{color: black;}
+    a:visited{color: black;}
+    a:hover{color: black;text-decoration:none;}
+    a:active{color: black;}
+    .menu{
+	  padding-right: 15px;
+	  width: 100%
+    }
+    .center{
+    	position:absolute; top:50%; left:40%;
+    	color:#000;
+    }
+    .search_area{
+    	width: 100%;
+    	height: 50px;
+    	background-color: #F8F8F8;
+    }
+  
+fieldset {
+  position: relative;
+  display: inline-block;
+  padding: 0px;
+  border: none;
+  border-radius: 5px;
+}
+
+input,
+button {
+  position: relative;
+  width: 200px;
+  height: 50px;
+  padding: 0;
+  display: inline-block;
+  float: left;
+}
+
+input {
+  color: #666;
+  z-index: 2;
+  border: 1;
+  border-style : solid;
+  border-color: gray;
+  border-width:1px;
+  border-radius: 10px;
+}
+input:focus {
+  outline: 0 none;
+}
+input:focus + button {
+  -webkit-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+          transform: translate(0, 0);
+  -webkit-transition-duration: 0.3s;
+          transition-duration: 0.3s;
+}
+input:focus + button .fa {
+  -webkit-transform: translate(0px, 0);
+      -ms-transform: translate(0px, 0);
+          transform: translate(0px, 0);
+  -webkit-transition-duration: 0.3s;
+          transition-duration: 0.3s;
+  color: #fff;
+}
+
+button {
+  z-index: 1;
+  width: 50px;
+  border: 0 none;
+ background-color: rgba( 255, 255, 255, 0 );
+  cursor: pointer;
+  border-radius: 0 5px 5px 0;  
+  -webkit-transform: translate(-50px, 0);
+      -ms-transform: translate(-50px, 0);
+          transform: translate(-50px, 0);
+  -webkit-transition-duration: 0.3s;
+          transition-duration: 0.3s;
+}
+
+.fa-search {
+  font-size: 1.4rem;
+  color: #29abe2;
+  z-index: 3;
+  top: 25%;
+  -webkit-transform: translate(-190px, 0);
+      -ms-transform: translate(-190px, 0);
+          transform: translate(-190px, 0);
+  -webkit-transition-duration: 0.3s;
+          transition-duration: 0.3s;
+  -webkit-transition: all 0.1s ease-in-out;
+          transition: all 0.1s ease-in-out;
+}
+
+  </style>
+
+</head>
+
+<body>
+<div class="search_area">
+	      <a class="navbar-brand" href="javascript:history.back()">
+        <img src="img/backarrow.png"></a>     
+ <?php $h='<form class = "menu" action=';
+
+$sqlin = array("--","'",'"',"#");
+$_GET['list'] = str_replace($sqlin, "", $_GET['list']);
+ 
+        $h .= '"list.html?list='.$_GET['list'].'" method="post">';
+        echo $h;?>
+        	<fieldset>
+        		<?php 
+            echo '<input type="search" name="search"autocomplete="off" placeholder="'.$_GET['list'].' 게시판" />';
+            ?>
+        		<button type="submit">
+        			 <i type="submit" class="fa fa-search" >
+        			 <img src ="img/search_icon.png";>			
+        			 </i>
+        		</button>
+        	</fieldset>
+        </form>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+</body>
+</html>

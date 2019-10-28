@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="css/bootstrap.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+ <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <style>
+    .panel-tost{display:none;position:absolute;background:#ddd;color:#333;width:230px;text-align:center;z-index:6001;opacity:.8;filter:alpha(opacity=50);top:40%;left:25%;}
+    #loading-image {  
+ position: absolute; 
+ top: 25%; 
+ left: 25%; 
+ z-index: 100; }
+    a{text-decoration:none;}
+    a:link{color: black;}
+    a:visited{color: black;}
+    a:hover{color: black;text-decoration:none;}
+    a:active{color: black;}
+  </style>
+</head>
+<script type="text/javascript">
+function first(){
+    $('#Progress_Loading').hide();
+}
+    function ff(){
+        if($('input#idd').val() == '' || $('input#pas').val() == ''){
+                faj();
+        }
+        else{
+            $.ajax({
+          url:"login.php",
+          type:'POST',
+          dataType:"html",
+          data: "userid="+$('input#idd').val()+"&password="+$('input#pas').val(),
+          beforeSend:function(){
+            $('#Progress_Loading').show(); //ajax실행시 로딩바를 보여준다.
+          },
+          success:function(data){
+            $("#loading").append(data);     
+          },
+          complete:function(){
+            $('#Progress_Loading').hide(); 
+
+          },
+          error:function(jqXHR, textStatus, errorThrown){
+              alert("ERROR_AJAX \n" + textStatus + " : " + errorThrown);
+          }
+        });
+        }
+    }
+    function faj(){
+      document.getElementById("forStr").innerHTML = "모두 입력해주세요.";
+      toost();
+    }   
+function toost(){
+   $('.panel-tost').fadeIn(400);
+  setTimeout(function() {
+    $('.panel-tost').slideUp(1500);
+      }, 1000);
+}
+
+</script>
+<div id = "loading"></div>
+<div class="panel panel-tost">
+ <div class="panel-heading">
+  <p id = forStr></p>
+</div>
+</div>
+<div id = "Progress_Loading"><!-- 로딩바 -->
+<img id ="loading-image" src="img/loading.gif"/>
+</div>
+<body>
+    <script type="text/javascript">first();</script>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="login-box well">    
+                    <form accept-charset="UTF-8" role="form" method="POST" onsubmit="ff(); return false;">
+                        <legend>로그인</legend>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                    <input autocomplete="off" type="text" name="userid" value='' placeholder="id" class="form-control"id="idd" /></div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                            <input autocomplete="off" type="password" name="password" value='' placeholder="Password" id="pas"class="form-control" /></div>
+                                        <button type="submit" id="login-submit" class="btn btn-default btn-block"/>로그인</button> <span class='text-center'>
+                                    <!--<a href="" class="text-sm">비밀번호 찾기</a></span>-->
+                                <div class="form-group">
+                            <a href="singup.html" class="btn btn-default btn-block"> 회원가입</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+  </div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+</body>
+</html>

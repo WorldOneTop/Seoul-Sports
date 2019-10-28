@@ -1,0 +1,9 @@
+<?php
+
+function functionName($str)
+{
+	
+}
+
+
+?>

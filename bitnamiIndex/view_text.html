@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.css">
+
+  <style>
+
+    .panel-tost{display:none;position:absolute;background:#ddd;color:#333;width:230px;text-align:center;z-index:6001;opacity:.8;filter:alpha(opacity=50);top:40%;left:25%;}
+  </style>
+<script type="text/javascript">
+  
+function toost(){
+   $('.panel-tost').fadeIn(400);
+  setTimeout(function() {
+    $('.panel-tost').slideUp(1500);
+      }, 1000);
+}
+</script>
+
+  <style>
+    .linee {
+ border-bottom: 1px solid #F5F5F5; 
+ width: 100%;
+}
+.blockquote{
+  font-size: 0.7em;
+}
+#loading-image {  
+ position: absolute; 
+ top: 25%; 
+ left: 25%; 
+ z-index: 100; }
+    .of{
+      font-size: 15pt;
+      word-break: break-all;
+      width: 300px;    }
+    a{text-decoration:none;}
+    a:link{color: black;}
+    a:visited{color: black;}
+    a:hover{color: black;text-decoration:none;}
+    a:active{color: black;}
+    .menu{
+  float: right;
+  padding-right: 10px;
+
+    }
+    blockquote {
+	  border: 1px solid #555;
+	  margin-left: 0px;
+	  margin-right: 0px;
+	  padding-left: 20px;
+	  padding-right: 20px;
+	  border-left: 10px solid #555;
+	}
+	.s{
+	font-size: small;
+	}
+  .h6{
+    display: inline;
+  }
+    body{
+      padding-top: 30px; 
+      padding-bottom: 30px; 
+    }
+  </style>
+</head>
+
+<body>
+<?php
+  include("connect.php");
+  session_start();
+  echo "<script> var num = ".$_GET['num']."</script>";
+  echo "<script> var listName='".$_GET['list']."';</script>";
+  $maxPage = mysqli_num_rows($mysqli->query("select num from comment where list_num=".$_GET['num'].";"));
+  echo "<script> var maxPage=".$maxPage.";</script>";
+?>
+<script type="text/javascript">
+ var page = 0;
+  var starting = false;
+  var commentNum;
+  $(document).ready(function(){
+    $('#Progress_Loading').hide(); //첫 시작시 로딩바를 숨겨준다.     
+    $.ajax({
+          url:"submit_comment.php",
+          type:'POST',
+          dataType:"html",
+          data: "load="+1+"&num="+num+"&page="+page,
+          beforeSend:function(){
+            starting = true;
+            $('#Progress_Loading').show(); //ajax실행시 로딩바를 보여준다.
+          },
+          success:function(data){
+            $('#Progress_Loading').hide(); //ajax종료시 로딩바를 숨겨준다.
+            $("#loading").append(data);     
+            page += 15;            
+          },  
+          complete:function(){
+            starting = false;  
+          },
+          error:function(jqXHR, textStatus, errorThrown){
+              alert("ERROR_AJAX \n" + textStatus + " : " + errorThrown);
+          }
+        });
+  });
+  jQuery(window).scroll(function () {//마지막 458 1226 (screenH)740 (innerH)612 (outerH)668
+    if(window.scrollY+1>= document.documentElement.getBoundingClientRect().height - window.outerHeight){
+      if(!starting && page <maxPage){
+        $.ajax({
+          url:"submit_comment.php",
+          type:'POST',
+          dataType:"html",
+          data: "load="+1+"&num="+num+"&page="+page,
+          beforeSend:function(){
+            starting = true;
+            jQuery('#Progress_Loading').show(); //ajax실행시 로딩바를 보여준다.
+          },
+          success:function(data){
+            $('#Progress_Loading').hide(); //ajax종료시 로딩바를 숨겨준다.
+            $("#loading").append(data);     
+            page += 15;            
+          },
+          complete:function(){
+            starting = false;  
+          },
+          error:function(jqXHR, textStatus, errorThrown){
+              alert("ERROR_AJAX \n" + textStatus + " : " + errorThrown);
+          }
+        });
+      }
+    }
+  });
+ $(document).on("click",".ffff",function() {
+
+  if(!(document.getElementById("submi").value)){
+    document.getElementById("forStr").innerHTML = "내용을 입력하세요.";
+    toost();
+  }
+  else{
+   $.ajax({
+          url:"submit_comment.php",
+          type:'POST',
+          dataType:"html",
+          data: "load="+2+"&num="+num+"&page="+(page = 0)+"&val="+document.getElementById("submi").value,
+          beforeSend:function(){
+            $('textarea').val('');
+            starting = true;
+            $('#Progress_Loading').show(); //ajax실행시 로딩바를 보여준다.
+          },
+          success:function(data){
+            $('#Progress_Loading').hide(); //ajax종료시 로딩바를 숨겨준다.
+            $("#loading").prepend(data);     
+          },
+          complete:function(){
+            starting = false;  
+          },
+          error:function(jqXHR, textStatus, errorThrown){
+              alert("ERROR_AJAX \n" + textStatus + " : " + errorThrown);
+          }
+        });
+  }
+  });
+ function faj(str){
+      document.getElementById("forStr").innerHTML = str;
+      toost();
+    }   
+  function remove(isComment, num){
+      $.ajax({
+          url:"delect_comment.php",
+          type:'POST',
+          dataType:"html",
+          data: "isComment="+isComment+"&num="+num+"&list"+listName,
+          beforeSend:function(){
+            starting = true;
+            $('#Progress_Loading').show(); //ajax실행시 로딩바를 보여준다.
+          },
+          success:function(data){
+            $('#Progress_Loading').hide(); //ajax종료시 로딩바를 숨겨준다.
+            $("#loading").prepend(data);     
+          },
+          complete:function(){
+            starting = false;  
+          },
+          error:function(jqXHR, textStatus, errorThrown){
+              alert("ERROR_AJAX \n" + textStatus + " : " + errorThrown);
+          }
+        });
+  }
+</script>
+
+
+<nav class="navbar navbar-default navbar-fixed-top ">
+   <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="javascript:history.back()">
+        <img src="img/backarrow.png"></a>     
+         <div class="navbar-text"> <?php echo $_GET['list']." 게시판"; ?>
+      <img onclick ="location.reload();" class ="menu" src="img/refresh_icon.png" ></div>  
+    </div>
+  </div>
+</nav>
+<?php
+            include("connect.php");
+            $op = "select head, body, date, user, user_id from list where num=".$_GET['num'];
+            $call = mysqli_fetch_row($mysqli->query($op));
+            ?>
+<div class="container">
+             
+
+<img style="background-color: #111;" class="img-responsive img-rounded">
+  <div class="col-md-12" >
+    <div class="page-header">
+      <div class="media">
+        <div class="media-left">
+          <a href="#">
+            <img class="media-object" src = "img/basketball_ball.png">
+          </a>
+        </div>
+        <div class="media-body">
+          <?php
+            date_default_timezone_set('Asia/Seoul');
+            $now =  date("Y-m-d H:i:s");
+            $result = strtotime($now) - strtotime($call[2]);
+            if($result <60*60){
+              $date = (int)($result/60)."분 전";
+            }
+            else if($result < 60*60*24){
+              $date = date('H시 i분',strtotime($call[2]));
+            }
+            else {
+              $date = date('Y-m-d', strtotime($call[2]));
+            }
+
+            $h = '<strong class="media-heading">';
+            $h .= $call[3];
+            $h .= '</strong><br><h6 style="display: inline;">';
+            $h .= $date;
+            $h .= "</h6 >";
+            if(!empty($_SESSION['id'])){
+              if(!strcmp($_SESSION['id'],$call[4])){
+                $h .= '<button type="button" class="menu btn-sm btn btn-default "data-toggle="modal" data-target="#modal_h">삭 제</button>';
+              }}
+            echo $h;
+          ?>
+        </div>
+      </div>
+        <?php
+
+            $inner_html = "";
+            $inner_html .= "<p class = 'of'>";
+
+            $inner_html .= $call[0]."</p>"."";
+            $inner_html .= "<p>";
+        
+            $inner_html .= $call[1];
+            $inner_html .="</p>";
+            echo $inner_html;
+        ?>
+    </div>
+        <div id = loading>
+        </div>
+  </div>
+</div>
+
+     <div class="panel panel-tost">
+ <div class="panel-heading">
+  <p id = forStr>로그인을 해주세요.</p>
+</div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal_h" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><h1 style="display: inline;">&times;</h1></button>
+        <h4 class="modal-title" id="myModalLabel">글을 삭제 하시겠습니까?</h4>
+        <br>
+        <div style="text-align: center;bottom:0px;">
+          <?php
+          $h = '<button type="button" class="btn btn-secondary" data-dismiss="modal"  onclick="remove(false,\'';
+          $h .= $_GET['num'];
+          $h .= '\');">확 인</button></div>';
+          echo $h;
+          ?>
+      </div>
+    </div>
+  </div></div>
+<div class="modal fade" id="modal_c" tabindex="-1" value="ASD" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><h1 style="display: inline;">&times;</h1></button>
+        <h4 class="modal-title" id="myModalLabel">글을 삭제 하시겠습니까?</h4>
+        <br>
+        <div value="ASAAA" style="text-align: center;">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="remove(true,commentNum);">확 인</button></div>
+      </div>
+    </div>
+  </div></div>        <!-- 이거 value값 등으로 뭘 체크했는지 알아야함  -->
+
+
+
+<div id = "Progress_Loading"><!-- 로딩바 -->
+<img id ="loading-image" src="img/loading.gif"/>
+</div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+  <div class="container">
+    
+      <div class="input-group input-group-lg" >
+        
+          <textarea style="resize: none;"type="text" id = "submi" class="form-control" placeholder="댓글을 입력하세요." aria-describedby="sizing-addon1"></textarea>
+          <?php
+        if(isset($_SESSION["name"])){
+          $t = ' ffff';
+        }
+        else{
+          $t = '"onclick="toost();  setTimeout(function() { ';
+          $t .= "location.href='login.html'}, 1000) \"";
+        }
+      $h = '<span id="sizing-addon1" class="input-group-addon'.$t.'" >전송</span>';
+      echo $h;
+        ?>
+        
+    </div>
+  </div>
+</nav>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+</body>
+</html>

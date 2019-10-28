@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <style>
+    .panel-tost{display:none;position:absolute;background:#ddd;color:#333;width:230px;text-align:center;z-index:6001;opacity:.8;filter:alpha(opacity=50);top:40%;left:25%;}
+    #loading-image {  
+ position: absolute; 
+ top: 25%; 
+ left: 25%; 
+ z-index: 100; }
+
+  .right{
+    text-align: right;
+  }    
+  a{
+  float : left;
+  }
+  </style>
+<script type="text/javascript">
+function first(){
+    $('#Progress_Loading').hide();
+}
+    function ff(){
+        if($('input#a').val() == '' || $('input#b').val() == ''|| $('input#c').val() == ''|| $('input#d').val() == ''){
+                faj("모두 입력해주세요.");
+        }
+        else if($('input#c').val() != $('input#d').val()){
+                faj("비밀번호를 확인해주세요.");
+        }
+        else{
+            $.ajax({
+          url:"singup.php",
+          type:'POST',
+          dataType:"html",
+          data: "inputname="+$('input#a').val()+"&inputId="+$('input#b').val()+"&inputPassword="+$('input#c').val(),
+          beforeSend:function(){
+            $('#Progress_Loading').show(); //ajax실행시 로딩바를 보여준다.
+          },
+          success:function(data){
+            $("#loading").append(data);     
+          },
+          complete:function(){
+            $('#Progress_Loading').hide(); 
+
+          },
+          error:function(jqXHR, textStatus, errorThrown){
+              alert("ERROR_AJAX \n" + textStatus + " : " + errorThrown);
+          }
+        });
+        }
+    }
+    function faj(str){
+      document.getElementById("forStr").innerHTML = str;
+      toost();
+    }   
+function toost(){
+   $('.panel-tost').fadeIn(400);
+  setTimeout(function() {
+    $('.panel-tost').slideUp(1500);
+      }, 1000);
+}
+
+</script>
+
+
+</head>
+<div id = "loading"></div>
+
+<div class="panel panel-tost">
+ <div class="panel-heading">
+  <p id = forStr></p>
+</div>
+</div>
+
+<div id = "Progress_Loading"><!-- 로딩바 -->
+<img id ="loading-image" src="img/loading.gif"/>
+</div>
+
+<body>
+    <script type="text/javascript">first();</script>
+
+<article class="container">      
+            <div class="page-header"> 
+                <div class="col-md-6 col-md-offset-3 right">
+                
+                <h3 ><a href="javascript:history.back()">
+                <img src="img/backarrow.png"></a>회원가입</h3>
+
+                </div>
+            </div> 
+            <div class="col-sm-6 col-md-offset-3">
+                <form role="form" onsubmit="ff(); return false;" method="POST">
+                  <div class="form-group">
+                        <label for="inputname">닉네임</label>
+                        <input autocomplete="off" type="text" id="a" class="form-control" name="inputname" maxlength="20" placeholder="닉네임을 입력하세요(최대 20글자)">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputName">아이디</label>
+                        <input autocomplete="off" type="text" id="b" class="form-control" name="inputId" maxlength="20" placeholder="아이디를 입력하세요(최대 20글자)">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword">비밀번호</label>
+                        <input autocomplete="off" type="password" id="c" class="form-control" name="inputPassword" placeholder="비밀번호를 입력하세요(최대 20글자)">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPasswordCheck">비밀번호 확인</label>
+                        <input autocomplete="off" type="password" id="d" class="form-control" name="inputPasswordCheck" placeholder="비밀번호를 다시 한번 입력하세요">
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" id="join-submit" class="btn btn-primary">
+                            회원가입<i class="fa fa-check spaceLeft"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </article>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+</body>
+</html>

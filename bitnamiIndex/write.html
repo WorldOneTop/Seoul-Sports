@@ -1,0 +1,158 @@
+
+
+<!DOCTYPE html>
+<html>
+
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no">
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.css">
+
+<style type="text/css">
+  .panel-tost{display:none;position:absolute;background:#ddd;color:#333;width:230px;text-align:center;z-index:6001;opacity:.8;filter:alpha(opacity=50);top:40%;left:25%;}
+</style>
+<script>
+  function toost(){
+    $('.panel-tost').fadeIn(400);
+  setTimeout(function() {
+    $('.panel-tost').slideUp(1500);
+      }, 1000);
+  }
+</script>
+  <style>
+#loading-image {  
+ position: absolute; 
+ top: 25%; 
+ left: 25%; 
+ z-index: 100; }
+    .of{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 150px;
+    }
+    a{text-decoration:none;}
+    a:link{color: black;}
+    a:visited{color: black;}
+    a:hover{color: black;text-decoration:none;}
+    a:active{color: black;}
+
+    .menu{
+	  float: right;
+	  margin-right: 30px;
+	  padding : 5px;
+	  border-radius: 7px;
+	  background-color: #666;
+    }
+    body{
+      padding-top: 50px; 
+    }
+    html, body {
+	width: 100%; height: 100%;
+}
+    .all{
+    	width: 100%;
+    	height : 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel panel-tost">
+   <div class="panel-heading">
+     <p id = forStr></p>
+  </div>
+</div>
+<?php
+session_start();
+if(empty($_SESSION["name"])){
+
+  echo '<script>document.getElementById("forStr").innerHTML = "회원만 글작성이 가능합니다.";</script>';
+  echo "<script>toost(); setTimeout(function() { location.href='login.html' }, 1000);</script>";
+}
+?>
+
+
+
+  <?php
+  echo "<script> var list = '".$_GET['list']."';</script>" ;
+  ?>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#Progress_Loading').hide();
+  });
+  $(document).on("click",".ffff",function() {
+    if($('#frm1').val()=='' || $('#frm2').val()==''){
+      document.getElementById("forStr").innerHTML = "본문을 모두 작성해주세요.";
+      toost();
+    }
+    else{
+         $.ajax({
+          url:"write.php",
+          type:'POST',
+          dataType:"html",
+          data: "head="+($('#frm1').val())+"&body="+($('#frm2').val())+"&list="+list,
+          beforeSend:function(){
+            $('#Progress_Loading').show(); //ajax실행시 로딩바를 보여준다.
+          },
+          success:function(data){
+            $('#Progress_Loading').hide(); //ajax종료시 로딩바를 숨겨준다.
+            $("#loading").append(data);     
+          },
+          complete:function(){
+            $('#Progress_Loading').hide(); //ajax종료시 로딩바를 숨겨준다.
+          },
+          error:function(jqXHR, textStatus, errorThrown){
+              alert("ERROR_AJAX \n" + textStatus + " : " + errorThrown);
+          }
+        });
+    }
+  }); 
+</script>
+
+
+
+<nav class="navbar navbar-default navbar-fixed-top ">
+   <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="javascript:history.back()">
+        <img src="img/backarrow.png"></a>     
+         <div class="navbar-text"> 글 쓰기
+         	<span class = "ffff"><button class =" menu" style="color:white">완 료 </button></span>
+		</div>  
+    </div>
+  </div>
+</nav>
+
+<div id = "Progress_Loading"><!-- 로딩바 -->
+<img id ="loading-image" src="img/loading.gif"/>
+</div>
+
+ 
+
+
+<br><br>
+<div id = "loading"></div>
+<article class="container all">      
+            <div class="col-sm-6 col-md-offset-3 all" >
+               <form role="form" method="POST" class ="all">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="frm1"autocomplete="off" name="head" placeholder="제목">
+                    </div><hr>
+					<div class="form-group all">
+                    	<textarea type="text all" style="height : 100%;resize: none;" class="form-control" id="frm2" name="body" placeholder="본문 내용"></textarea>
+                  </div>
+                </form>
+            </div>
+        </article>
+
+                        
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+</body>
+</html>
